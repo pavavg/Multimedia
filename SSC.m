@@ -91,7 +91,7 @@ if frameType1 == 'OLS'
     elseif frameType2 == 'ESH'
         frameType = 'ESH' ;
     else
-        frameType = 'LSS' ; 
+        frameType = 'LPS' ; 
     end
     
 elseif frameType1 == 'LSS'
@@ -113,13 +113,13 @@ elseif frameType1 == 'ESH'
 else
     
     if frameType2 == 'OLS'
-        frameType = 'LSS' ;
+        frameType = 'LPS' ;
     elseif frameType2 == 'LSS'
         frameType = 'ESH' ;
     elseif frameType2 == 'ESH'
         frameType = 'ESH' ;
     else
-        frameType = 'LSS' ; 
+        frameType = 'LPS' ; 
     end
     
 
