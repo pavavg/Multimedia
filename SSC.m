@@ -11,6 +11,7 @@ nextFrameType2 = 'OLS' ;
 index = 449;
 s_sq1 = zeros(8,1);
 s_sq2 = zeros(8,1);
+
 ds_sq1 = zeros(8,1);
 ds_sq2 = zeros(8,1);
 for i=1:8
@@ -40,35 +41,35 @@ for i=1:8
     
 end
 
-if prevFrameType == 'OLS'
+if strcmp(prevFrameType,'OLS')
     
-    if nextFrameType1 == 'ESH'
+    if strcmp(nextFrameType1 ,'ESH')
         frameType1 = 'LSS' ;
     else 
         frameType1 = 'OLS' ;
     end
     
-    if nextFrameType2 == 'ESH'
+    if strcmp(nextFrameType2 ,'ESH')
         frameType2 = 'LSS' ;
     else 
         frameType2 = 'OLS' ;
     end
     
-elseif prevFrameType == 'ESH'
+elseif strcmp(prevFrameType, 'ESH')
     
-    if nextFrameType1 == 'ESH'
+    if strcmp(nextFrameType1 ,'ESH')
         frameType1 = 'ESH' ;
     else 
         frameType1 = 'LSS' ;
     end
     
-    if nextFrameType2 == 'ESH'
+    if strcmp(nextFrameType2 ,'ESH')
         frameType2 = 'ESH' ;
     else 
         frameType2 = 'LSS' ;
     end
     
-elseif prevFrameType == 'LSS'
+elseif strcmp(prevFrameType ,'LSS')
     
     frameType1 = 'ESH' ;
     frameType2 = 'ESH' ;
@@ -82,41 +83,41 @@ end
 
 
 
-if frameType1 == 'OLS'
+if strcmp(frameType1 ,'OLS')
     
-    if frameType2 == 'OLS'
+    if strcmp(frameType2 ,'OLS')
         frameType = 'OLS' ;
-    elseif frameType2 == 'LSS'
+    elseif strcmp(frameType2 ,'LSS')
         frameType = 'LSS' ;
-    elseif frameType2 == 'ESH'
+    elseif strcmp(frameType2 ,'ESH')
         frameType = 'ESH' ;
     else
         frameType = 'LPS' ; 
     end
     
-elseif frameType1 == 'LSS'
+elseif strcmp(frameType1 ,'LSS')
     
-    if frameType2 == 'OLS'
+    if strcmp(frameType2 ,'OLS')
         frameType = 'LSS' ;
-    elseif frameType2 == 'LSS'
+    elseif strcmp(frameType2 ,'LSS')
         frameType = 'LSS' ;
-    elseif frameType2 == 'ESH'
+    elseif strcmp(frameType2 ,'ESH')
         frameType = 'ESH' ;
     else
         frameType = 'ESH' ; 
     end
     
-elseif frameType1 == 'ESH'
+elseif strcmp(frameType1 ,'ESH')
     
     frameType = 'ESH' ;
     
 else
     
-    if frameType2 == 'OLS'
+    if strcmp(frameType2 ,'OLS')
         frameType = 'LPS' ;
-    elseif frameType2 == 'LSS'
+    elseif strcmp(frameType2 ,'LSS')
         frameType = 'ESH' ;
-    elseif frameType2 == 'ESH'
+    elseif strcmp(frameType2 ,'ESH')
         frameType = 'ESH' ;
     else
         frameType = 'LPS' ; 
