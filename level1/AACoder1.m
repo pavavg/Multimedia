@@ -1,6 +1,6 @@
 function AACSeq1 = AACoder1(fNameIn)
-y = audioread(fNameIn);
-frameNumber = floor(size(y,1) /1024 -2);
+y = audioread(fNameIn); %Read Audio
+frameNumber = floor(size(y,1) /1024 -2); %Frame number to be splitted
 
 AACSeq1 = struct([]) ;
 index = 1;
@@ -22,6 +22,7 @@ for i=1:frameNumber
     index = index +1024;
 end
 
+%Last frame
 frameT = y(index:index+2047 , :) ;
 AACSeq1(frameNumber+1).frameType = AACSeq1(frameNumber).frameType ;
 AACSeq1(frameNumber+1).winType = 'SIN' ;

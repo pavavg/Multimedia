@@ -1,10 +1,14 @@
 function frameType = SSC(frameT, nextFrameT, prevFrameType)
 
+%High-Pass Filter
 b = [0.7548 -0.7548];
 a = [1 -0.5095];
 x1_filtered = filter(b,a,nextFrameT(:,1));
 x2_filtered = filter(b,a,nextFrameT(:,2));
 
+%If s^2>0.001 && ds^2 > 10 for at least one subframe, 
+%then nextframeType = 'ESH'
+%Else, nextframeType = 'OLS'
 nextFrameType1 = 'OLS' ;
 nextFrameType2 = 'OLS' ;
 
@@ -41,6 +45,7 @@ for i=1:8
     
 end
 
+%Determine current frameType for each channel
 if strcmp(prevFrameType,'OLS')
     
     if strcmp(nextFrameType1 ,'ESH')
@@ -82,7 +87,7 @@ else
 end
 
 
-
+%Determine current frameType for both channels
 if strcmp(frameType1 ,'OLS')
     
     if strcmp(frameType2 ,'OLS')

@@ -1,5 +1,7 @@
 function frameF = filterbank(frameT, frameType, winType)
-N = 2048 ;
+N = 2048 ; %frame Size
+
+% Create window W and calculate the new signal
 if strcmp(frameType, 'OLS')
     
     M = N/2;
@@ -25,8 +27,8 @@ if strcmp(frameType, 'OLS')
         Wright = zeros(M,1);
         
         for n=1:M
-            Wleft(n) = sin(pi *( n +0.5) /N ) ;
-            Wright(n) = sin(pi *( M+n +0.5) /N ) ;
+            Wleft(n) = sin(pi *( n-1 +0.5) /N ) ;
+            Wright(n) = sin(pi *( M+n-1 +0.5) /N ) ;
         end
         W = [Wleft ; Wright];
         
@@ -67,7 +69,7 @@ elseif strcmp(frameType, 'LSS')
         M = N/2;
         Wleft = zeros(M,1);
         for n=1:M
-            Wleft(n) = sin(pi *( n +0.5) /N ) ;
+            Wleft(n) = sin(pi *( n-1 +0.5) /N ) ;
         end
         
         Wright1 = ones(448,1);
@@ -75,7 +77,7 @@ elseif strcmp(frameType, 'LSS')
         Wright2 = zeros(128,1);
         
         for n=1:128
-            Wright2(n) = sin(pi *(128+ n +0.5) /256 ) ;
+            Wright2(n) = sin(pi *(128+ n-1 +0.5) /256 ) ;
         end
         
         Wright3 = zeros(448,1);
@@ -120,7 +122,7 @@ elseif strcmp(frameType, 'LPS')
         Wleft2 = zeros(128,1);
 
         for n=1:128
-            Wleft2(n) = sin(pi *( n+0.5) /256 ) ;
+            Wleft2(n) = sin(pi *( n-1+0.5) /256 ) ;
         end
         
         Wleft3 = ones(448,1);
@@ -129,7 +131,7 @@ elseif strcmp(frameType, 'LPS')
         Wright = zeros(M,1);
         
         for n=1:M
-            Wright(n) = sin(pi *(M+ n +0.5) /N ) ;
+            Wright(n) = sin(pi *(M+ n-1 +0.5) /N ) ;
         end
         
         W = [Wleft1 ; Wleft2 ; Wleft3 ;Wright  ];
@@ -140,7 +142,7 @@ elseif strcmp(frameType, 'LPS')
     end
         
 else
-    
+    %Create W for subframes
     if strcmp(winType, 'KBD' )
         kais = kaiser(128+1,4*pi);
         Wleft = zeros(128,1);
@@ -157,12 +159,12 @@ else
         Wright = zeros(128,1);
         
         for n=1:128
-            Wleft(n) = sin(pi *( n +0.5) /256 ) ;
-            Wright(n) = sin(pi *( 128+n +0.5) /256 ) ;
+            Wleft(n) = sin(pi *( n-1 +0.5) /256 ) ;
+            Wright(n) = sin(pi *( 128+n-1 +0.5) /256 ) ;
         end
         W = [Wleft ; Wright];
     end
-    
+    %Apply W to each subframe
     S1 = zeros(256,8) ;
     S2 = zeros(256,8) ;
     Snew1 = zeros(256,8) ;
@@ -176,7 +178,7 @@ else
     end
 end
 
-
+%Calculate MDCT
 if strcmp(frameType, 'LPS') || strcmp(frameType, 'OLS') || strcmp(frameType, 'LSS')
     
     X1 = mdct4(Snew1);
