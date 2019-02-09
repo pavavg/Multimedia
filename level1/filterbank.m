@@ -190,15 +190,17 @@ else
     
     frameF1 =[] ;
     frameF2 =[] ;
-    for i = 1:8
+    X1 = mdct4(Snew1(:,1));
+    X2 = mdct4(Snew2(:,1));
+    frameF = [X1 X2] ;
+    for i = 2:8
         X1 = mdct4(Snew1(:,i));
         X2 = mdct4(Snew2(:,i));
-        frameF1 = [frameF1 ; X1];
-        frameF2 = [frameF2 ; X2];
+        frameF = cat(3, frameF, [X1 X2]) ;
         
     end
         
-        frameF = [frameF1 frameF2] ;
+ 	     
 end
     
 

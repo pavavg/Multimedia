@@ -12,12 +12,12 @@ for i=1:frameNumber
     AACSeq1(i).frameType = SSC(frameT, nextFrameT, prevFrameType) ;
     prevFrameType = AACSeq1(i).frameType;
     
-    AACSeq1(i).winType = 'SIN' ;
+    AACSeq1(i).winType = 'KBD' ;
     
     frameF = filterbank(frameT, AACSeq1(i).frameType, AACSeq1(i).winType);
     
-    AACSeq1(i).chl.frameF = frameF(:,1) ;
-    AACSeq1(i).chr.frameF = frameF(:,2) ;
+    AACSeq1(i).chl.frameF = frameF(:,1,:) ;
+    AACSeq1(i).chr.frameF = frameF(:,2,:) ;
     
     index = index +1024;
 end
@@ -25,9 +25,9 @@ end
 %Last frame
 frameT = y(index:index+2047 , :) ;
 AACSeq1(frameNumber+1).frameType = AACSeq1(frameNumber).frameType ;
-AACSeq1(frameNumber+1).winType = 'SIN' ;
+AACSeq1(frameNumber+1).winType = 'KBD' ;
 frameF = filterbank(frameT, AACSeq1(frameNumber+1).frameType, AACSeq1(frameNumber+1).winType);
-AACSeq1(frameNumber+1).chl.frameF = frameF(:,1) ;
-AACSeq1(frameNumber+1).chr.frameF = frameF(:,2) ;
+AACSeq1(frameNumber+1).chl.frameF = frameF(:,1,:) ;
+AACSeq1(frameNumber+1).chr.frameF = frameF(:,2,:) ;
 
 end

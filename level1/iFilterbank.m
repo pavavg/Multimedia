@@ -175,15 +175,16 @@ else
     S2 = zeros(256, 8) ;
     S1_all =[];
     S2_all =[];
-    index = 1;
+    %index = 1;
     for i =1:8
-        F1(:,i) = frameF(index: index+127 , 1);
-        F2(:,i) = frameF(index: index+127 , 2);
+        
+        F1(:,i) = frameF(1: 128 , 1 , i);
+        F2(:,i) = frameF(1: 128 , 2 , i);
         
         S1(:,i) = imdct4( F1(:,i) ) .* W ;
         S2(:,i) = imdct4( F2(:,i) ) .* W ;
 
-        index = index +128 ;
+        %index = index +128 ;
     end
     
     %Add the overlapping parts of frames
