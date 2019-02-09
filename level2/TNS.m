@@ -74,8 +74,10 @@ if ~strcmp (frameType, 'ESH')
     a = lpc(Xw, 4) ;    
     
 else
+    a = zeros(5,8);
     for i = 1:8
-        a(i) = lpc(Xw(:,i), 4);
+        
+        a(:,i) = lpc(Xw(:,i), 4);
     end
     
 end
@@ -92,7 +94,7 @@ if ~strcmp (frameType, 'ESH')
     aQ = max(aQ, -0.75) ;    
 
 else
-    aQ = zeros(4,8) ;
+    aQ = zeros(5,8) ;
     
     for i = 1:8          
            aQ(:,i) = (floor(a(:,i)*10))/10 + 0.05 ;
@@ -118,7 +120,7 @@ else
         enum = aQ(:,i) ;
         denom = 1 ;
 
-        H(i) = filter(enum, denom, frameFin(:,i)) ;
+        H(:,i) = filter(enum, denom, frameFin(:,i)) ;
         % stability check
         % if stableF = 1 ok
         stableF = isstable(denom, enum) ;
@@ -126,7 +128,7 @@ else
     end
 end
 
-frameFout = Xw ;
+frameFout = H ;
 TNScoeffs = aQ ;
     
     
