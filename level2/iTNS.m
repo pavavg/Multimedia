@@ -11,7 +11,7 @@ else
         enum = TNScoeffs(:,i) ;
         denom = 1 ;
 
-        frameFout(i) = filter(denom, enum, frameFin(:,i)) ;
+        frameFout(:,i) = filter(denom, enum, frameFin(:,i)) ;
     
     end
 end

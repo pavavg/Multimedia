@@ -19,7 +19,7 @@ for i=1:frameNumber
     frameF = filterbank(frameT, AACSeq2(i).frameType, AACSeq2(i).winType);
     
     [AACSeq2(i).chl.frameF ,AACSeq2(i).chl.TNScoeffs] = TNS(frameF(:,1,:), AACSeq2(i).frameType) ; 
-    [AACSeq1(i).chr.frameF ,AACSeq2(i).chr.TNScoeffs] = TNS(frameF(:,2,:), AACSeq2(i).frameType) ;
+    [AACSeq2(i).chr.frameF ,AACSeq2(i).chr.TNScoeffs] = TNS(frameF(:,2,:), AACSeq2(i).frameType) ;
     
     index = index +1024;
 end
@@ -30,6 +30,6 @@ AACSeq2(frameNumber+1).frameType = AACSeq2(frameNumber).frameType ;
 AACSeq2(frameNumber+1).winType = 'SIN' ;
 frameF = filterbank(frameT, AACSeq2(frameNumber+1).frameType, AACSeq2(frameNumber+1).winType);
 [AACSeq2(frameNumber+1).chl.frameF ,AACSeq2(frameNumber+1).chl.TNScoeffs] = TNS(frameF(:,1,:), AACSeq2(frameNumber+1).frameType) ; 
-[AACSeq1(frameNumber+1).chr.frameF ,AACSeq2(frameNumber+1).chr.TNScoeffs] = TNS(frameF(:,2,:), AACSeq2(frameNumber+1).frameType) ;
+[AACSeq2(frameNumber+1).chr.frameF ,AACSeq2(frameNumber+1).chr.TNScoeffs] = TNS(frameF(:,2,:), AACSeq2(frameNumber+1).frameType) ;
     
 end
