@@ -216,7 +216,7 @@ else
     %Query 11
     qthr = zeros(42,8);
     for i = 1:8
-        qthr(:,i) = eps() * 1024 * 10.^(shortTable(:,6)/10) ;
+        qthr(:,i) = eps() * 128 * 10.^(shortTable(:,6)/10) ;
     end
     npart = max(nb , qthr);
     

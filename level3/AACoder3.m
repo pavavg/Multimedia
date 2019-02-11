@@ -69,9 +69,9 @@ for i=1:frameNumber
         streamR = [];
         for f =1:8
             [tempStream, tempCodebookL] = encodeHuff(Sl(:,f), loadLUT() );
-            streamL = [ streamL tempStream];
+            streamL = strcat(streamL,tempStream) ;
             [tempStream, tempCodebookR] = encodeHuff(Sr(:,f), loadLUT() );
-            streamR = [ streamR tempStream];
+            streamR = strcat(streamR ,tempStream) ;
         end
         AACSeq3(i).chl.stream = streamL;
         AACSeq3(i).chr.stream = streamR;
