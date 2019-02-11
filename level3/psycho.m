@@ -218,7 +218,7 @@ else
     for i = 1:8
         qthr(:,i) = eps() * 1024 * 10.^(shortTable(:,6)) ;
     end
-    npart = max(nbm , qthr);
+    npart = max(nb , qthr);
     
     %Query 12
     SMR = e ./npart;
