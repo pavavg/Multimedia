@@ -80,28 +80,28 @@ else
             Pe(i, f) = sum(X(start: finish, f) - Xhat(start: finish, f ).^2) ;
         end
         
-       T(:, f) = P(:, f)./SMR(:, f) ; 
+        T(:, f) = P(:, f)./SMR(:, f) ; 
         
        
-    for i = 1:noBands
-        while  Pe(i, f) < T(i, f) 
-            a(i, f) = a(i, f) + 1 ;
-            % i+1 + i ????
-            if  i <noBands && max(abs( a(i+1, f) - a(i, f) )) > 60 
-                 break;
-            end    
-            start = B219b(i, 2)+1;
-            finish = B219b(i, 3) +1;
-            for j = start: finish
-                S(j, f) = sign(X(j, f))*floor((abs(X(j, f))*2^(-a(i, f)/4))^(3/4) + MagicNumber) ;
-                Xhat(j, f) = sign(S(j, f))*(abs(S(j, f)))^(4/3) * 2^(a(i, f)/4) ;
-            end
-            
-            Pe(i, f) = sum(X(start: finish, f) - Xhat(start: finish, f).^2) ;
-        end   
-        
-        
-    end
+        for i = 1:noBands
+            while  Pe(i, f) < T(i, f) 
+                a(i, f) = a(i, f) + 1 ;
+                % i+1 + i ????
+                if  i <noBands && max(abs( a(i+1, f) - a(i, f) )) > 60 
+                     break;
+                end    
+                start = B219b(i, 2)+1;
+                finish = B219b(i, 3) +1;
+                for j = start: finish
+                    S(j, f) = sign(X(j, f))*floor((abs(X(j, f))*2^(-a(i, f)/4))^(3/4) + MagicNumber) ;
+                    Xhat(j, f) = sign(S(j, f))*(abs(S(j, f)))^(4/3) * 2^(a(i, f)/4) ;
+                end
+
+                Pe(i, f) = sum((X(start: finish, f) - Xhat(start: finish, f)).^2) ;
+            end   
+
+
+        end
        
        
     end    

@@ -68,8 +68,10 @@ for i=1:frameNumber
         streamL = [];
         streamR = [];
         for f =1:8
+            
             [tempStream, tempCodebookL] = encodeHuff(Sl(:,f), loadLUT() );
             streamL = strcat(streamL,tempStream) ;
+            
             [tempStream, tempCodebookR] = encodeHuff(Sr(:,f), loadLUT() );
             streamR = strcat(streamR ,tempStream) ;
         end

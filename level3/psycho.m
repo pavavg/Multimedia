@@ -208,7 +208,7 @@ else
     SNR = tb*18 + (1-tb)*6;
     
     %Query 9
-    bc = 10 .^(SNR/10) ;
+    bc = 10 .^(-SNR/10) ;
     
     %Query 10
     nb = en .* bc;
