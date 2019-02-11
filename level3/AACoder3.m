@@ -1,5 +1,6 @@
 function AACSeq3 = AACoder3(fNameIn, fnameAACoded)
-
+load('TableB219.mat')
+forceCodebook = 12;
 y = audioread(fNameIn); %Read Audio
 frameNumber = floor(size(y,1) /1024 -2); %Frame number to be splitted
 
@@ -23,10 +24,60 @@ for i=1:frameNumber
     end
     [AACSeq3(i).chl.frameF ,AACSeq3(i).chl.TNScoeffs] = TNS(frameF(:,1,:), AACSeq3(i).frameType) ; 
     [AACSeq3(i).chr.frameF ,AACSeq3(i).chr.TNScoeffs] = TNS(frameF(:,2,:), AACSeq3(i).frameType) ;
-    SMRr = psycho(frameT(:,1), AACSeq3(i).frameType ,frameTprev1(:,1), frameTprev2(:,1) );
-    SMRl = psycho(frameT(:,2), AACSeq3(i).frameType ,frameTprev1(:,2), frameTprev2(:,2) );
-    [S, sfc, G] = AACquantizer(frameF(:,1,:), AACSeq3(i).frameType, SMRr);
+    SMRl = psycho(frameT(:,1), AACSeq3(i).frameType ,frameTprev1(:,1), frameTprev2(:,1) );
+    SMRr = psycho(frameT(:,2), AACSeq3(i).frameType ,frameTprev1(:,2), frameTprev2(:,2) );
     
+    if ~strcmp(AACSeq3(i).frameType, 'ESH')
+        noBands = size(B219a, 1) ;
+        Pl = zeros(noBands,1);
+        Pr = zeros(noBands,1);
+        for b = 1:noBands
+            start = B219a(b, 2)+1;
+            finish = B219a(b, 3) +1;
+            Pl(b)  = sum(AACSeq3(i).chl.frameF(start:finish,: ).^2) ;
+            Pr(b)  = sum(AACSeq3(i).chr.frameF(start:finish,: ).^2) ;
+        end
+        AACSeq3(i).chl.T = Pl ./SMRl ;
+        AACSeq3(i).chr.T = Pr ./SMRr ;
+    else
+        noBands = size(B219b, 1) ;
+        Pl = zeros(noBands,8);
+        Pr = zeros(noBands,8);
+        
+        for f =1:8
+            for b = 1:noBands
+                start = B219b(b, 2)+1;
+                finish = B219b(b, 3) +1;
+                Pl(b, f)  = sum(AACSeq3(i).chl.frameF(start: finish ,f).^2) ;
+                Pr(b, f)  = sum(AACSeq3(i).chr.frameF(start: finish ,f).^2) ;
+            end
+        end
+        AACSeq3(i).chl.T = Pl ./SMRl ;
+        AACSeq3(i).chr.T = Pr ./SMRr ;
+        
+    end
+    
+    [Sl, sfcL, AACSeq3(i).chl.G] = AACquantizer(frameF(:,1,:), AACSeq3(i).frameType, SMRl);
+    [Sr, sfcR, AACSeq3(i).chr.G] = AACquantizer(frameF(:,2,:), AACSeq3(i).frameType, SMRr);
+    if ~strcmp(AACSeq3(i).frameType, 'ESH')
+        [AACSeq3(i).chl.stream, AACSeq3(i).chl.codebook] = encodeHuff(Sl, loadLUT() );
+        [AACSeq3(i).chr.stream, AACSeq3(i).chr.codebook] = encodeHuff(Sr, loadLUT() );
+        %[AACSeq3(i).chl.sfc, ~] = encodeHuff(sfcL, loadLUT(), forceCodebook);
+        %[AACSeq3(i).chr.sfc,~] = encodeHuff(sfcR, loadLUT() , forceCodebook);
+    else
+        streamL = [];
+        streamR = [];
+        for f =1:8
+            [tempStream, tempCodebookL] = encodeHuff(Sl(:,f), loadLUT() );
+            streamL = [ streamL tempStream];
+            [tempStream, tempCodebookR] = encodeHuff(Sr(:,f), loadLUT() );
+            streamR = [ streamR tempStream];
+        end
+        AACSeq3(i).chl.stream = streamL;
+        AACSeq3(i).chr.stream = streamR;
+        AACSeq3(i).chl.codebook = tempCodebookL;
+        AACSeq3(i).chr.codebook = tempCodebookR;
+    end
     frameTprev2 = frameTprev1;
     frameTprev1 = frameT;
     index = index +1024;

@@ -34,7 +34,7 @@ if ~strcmp (frameType, 'ESH')
     Swprev1 = zeros(2048,1) ;
     Swprev2 = zeros(2048,1) ;
     for i = 1: 2048
-        hannWindow = 0.5 -0.5* cos( pi*(i-1+0.5) / 2048 );
+        hannWindow = 0.5 -0.5* cos( pi*(i-1+0.5) / 1024 );
         Sw(i) = frameT(i)*hannWindow ;
         Swprev1(i) = frameTprev1(i)*hannWindow ;
         Swprev2(i) = frameTprev2(i)*hannWindow ;
@@ -68,7 +68,7 @@ if ~strcmp (frameType, 'ESH')
         start = longTable(i,2) +1;
         finish = longTable(i,3) +1;
         e(i) = sum ( r(start:finish).^2 );
-        c(i) = sum( c_w(start:finish).* r(start:finish).^2 , 1 );
+        c(i) = sum( c_w(start:finish).* r(start:finish).^2  );
     end
     
     %Query 6
@@ -86,7 +86,7 @@ if ~strcmp (frameType, 'ESH')
     tb = -0.299 - 0.43 * log(cb) ;
     
     %Query 8
-    SNR = tb *6 + (1-tb)* 18 ;
+    SNR = tb *18 + (1-tb)* 6 ;
     
     %Query 9
     bc = 10 .^ (-SNR/10);
@@ -95,7 +95,7 @@ if ~strcmp (frameType, 'ESH')
     nb = en .* bc;
     
     %Query 11
-    qthr = eps() * 1024 * 10.^(longTable(:,6)) ;
+    qthr = eps() * 1024 * 10.^(longTable(:,6)/10) ;
     npart = max( nb, qthr );
     
     %Query 12
@@ -143,7 +143,7 @@ else
         Subprev1(:,i) = frameTprev1(index:index+255);
         
         for n =1:256
-            hannWindow = 0.5 -0.5* cos( pi*(n-1+0.5) / 2048 );
+            hannWindow = 0.5 -0.5* cos( pi*(n-1+0.5) / 128 );
             Sw(n,i) = Sub(n,i)*hannWindow ;
             Swprev1(n,i) = Subprev1(n,i)*hannWindow ;
         end
@@ -216,7 +216,7 @@ else
     %Query 11
     qthr = zeros(42,8);
     for i = 1:8
-        qthr(:,i) = eps() * 1024 * 10.^(shortTable(:,6)) ;
+        qthr(:,i) = eps() * 1024 * 10.^(shortTable(:,6)/10) ;
     end
     npart = max(nb , qthr);
     
