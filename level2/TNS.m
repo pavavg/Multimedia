@@ -86,18 +86,18 @@ end
 
 % aQ = a quantisized
 if ~strcmp (frameType, 'ESH')
-    aQ = zeros(4,1) ;
+    
     
     % N = 2^4 =16
-    aQ = (floor(a*10))/10 + 0.05 ;
+    aQ = (floor(a(2:5)*10))/10 + 0.05 ;
     aQ = min(aQ, +0.75) ;
     aQ = max(aQ, -0.75) ;    
 
 else
-    aQ = zeros(5,8) ;
+    aQ = zeros(4,8) ;
     
     for i = 1:8          
-           aQ(:,i) = (floor(a(:,i)*10))/10 + 0.05 ;
+           aQ(:,i) = (floor(a(2:5,i)*10))/10 + 0.05 ;
            aQ(:,i) = min(aQ(:,i), +0.75) ;
            aQ(:,i) = max(aQ(:,i), -0.75) ;  
     end
@@ -107,7 +107,7 @@ end
 % QUERY 4
 
 if ~strcmp (frameType, 'ESH')
-    enum = aQ ;
+    enum = [1 aQ] ;
     denom = 1 ;
     
     H = filter(enum, denom, frameFin) ;
@@ -117,7 +117,7 @@ if ~strcmp (frameType, 'ESH')
     
 else
     for i = 1:8
-        enum = aQ(:,i) ;
+        enum = [1 ;aQ(:,i)] ;
         denom = 1 ;
 
         H(:,i) = filter(enum, denom, frameFin(:,i)) ;

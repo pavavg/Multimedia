@@ -17,7 +17,9 @@ for i=1:frameNumber
     AACSeq2(i).winType = 'SIN' ;
     
     frameF = filterbank(frameT, AACSeq2(i).frameType, AACSeq2(i).winType);
-    
+    if  strcmp(AACSeq2(i).frameType ,'ESH')
+       % size(frameF)
+    end
     [AACSeq2(i).chl.frameF ,AACSeq2(i).chl.TNScoeffs] = TNS(frameF(:,1,:), AACSeq2(i).frameType) ; 
     [AACSeq2(i).chr.frameF ,AACSeq2(i).chr.TNScoeffs] = TNS(frameF(:,2,:), AACSeq2(i).frameType) ;
     
