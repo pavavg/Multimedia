@@ -9,8 +9,8 @@ load('TableB219.mat') ;
 
 if ~strcmp (frameType, 'ESH')
     a = zeros(size(B219a , 1), 1) ;    
-    a(:) = (16/3)*(log2(max(X).^(3/4))/MQ) ;
-
+    a(:) = (16/3)*log2( (max(X)^(3/4))/MQ ) ;
+    
     % QUERY 2
     S = sign(X).*floor( ( abs(X)* 2^(-a(1)/4) ).^(3/4) + MagicNumber) ;
     Xhat = sign(S).*(abs(S)).^(4/3) .* 2^(a(1)/4) ;
@@ -22,27 +22,32 @@ if ~strcmp (frameType, 'ESH')
         start = B219a(i, 2)+1;
         finish = B219a(i, 3) +1;
         P(i)  = sum(X(start:finish ).^2) ;
-        Pe(i) = sum((X(start:finish) - Xhat(start:finish) ).^2) ;
+        Pe(i) = sum( ( X(start:finish) - Xhat(start:finish) ).^2) ;
     end
 
     T = P./SMR  ;
 
-
+    
     for i = 1:noBands
         while  Pe(i) < T(i) 
             a(i) = a(i) + 1 ;
-            % i+1 + i ????
-            if  i <noBands && max(abs( a(i+1) - a(i) )) > 60 
+            
+            if   max(abs( a(2:end) - a(1:end-1) )) >= 60 
+                 a(i) = a(i)-1;
                  break;
-            end    
-            start = B219a(i, 2)+1;
-            finish = B219a(i, 3) +1;
-            for j = start : finish
-                S(j) = sign(X(j))*floor((abs(X(j))*2^(-a(i)/4))^(3/4) + MagicNumber) ;
-                Xhat(j) = sign(S(j))*(abs(S(j)))^(4/3) * 2^(a(i)/4) ;
             end
             
-            Pe(i) = sum((X(start : finish) - Xhat(start : finish) ).^2) ;
+            % i+1 + i ????
+            
+            start = B219a(i, 2)+1;
+            finish = B219a(i, 3) +1;
+            
+            S(start : finish) = sign(X(start : finish)).*floor((abs(X(start : finish)).*2^(-a(i)/4)).^(3/4) + MagicNumber) ;
+            Xhat(start : finish) = sign(S(start : finish)).*(abs(S(start : finish))).^(4/3) .* 2^(a(i)/4) ;
+            
+            
+            Pe(i) = sum( ( X(start : finish) - Xhat(start : finish) ).^2) ;
+                
         end        
     end
     
@@ -54,7 +59,7 @@ else
     S = zeros(128, 8);
     Xhat = zeros(128, 8);
     for f = 1:8             
-        a(:, f) = (16/3)*(log2(max(X(:, f)).^(3/4))/MQ) ;
+        a(:, f) = (16/3)*log2((max(X(:, f)).^(3/4))/MQ) ;
         S(:,f) = sign(X(:,f)).*floor((abs(X(:,f)).*2^(-a(1,f)/4)).^(3/4) + MagicNumber) ;
         Xhat(:,f) = sign(S(:,f)).*(abs(S(:,f))).^(4/3) .* 2^(a(1,f)/4) ;
     end
@@ -86,10 +91,12 @@ else
         for i = 1:noBands
             while  Pe(i, f) < T(i, f) 
                 a(i, f) = a(i, f) + 1 ;
-                % i+1 + i ????
-                if  i <noBands && max(abs( a(i+1, f) - a(i, f) )) > 60 
+                 if  max(abs( a(2:end, f) - a(1:end-1, f) )) >= 60 
+                     a(i, f) = a(i, f) - 1 ;
                      break;
-                end    
+                end  
+                % i+1 + i ????
+                 
                 start = B219b(i, 2)+1;
                 finish = B219b(i, 3) +1;
                 for j = start: finish
@@ -98,6 +105,7 @@ else
                 end
 
                 Pe(i, f) = sum((X(start: finish, f) - Xhat(start: finish, f)).^2) ;
+                
             end   
 
 

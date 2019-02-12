@@ -18,7 +18,7 @@ if ~strcmp (frameType, 'ESH')
                 tmpx = 1.5*(longTable(j,5) -longTable(i,5) );
             end
 
-            tmpz = 8*min((tmpx-0.5)^2 - 2*(tmpx-0.5),0);
+            tmpz = 8*min( (tmpx-0.5)^2 - 2*(tmpx-0.5),0);
             tmpy = 15.811389 +7.5*(tmpx+0.474) - 17.5* sqrt(1 + (tmpx + 0.474)^2);
 
             if tmpy< -100
@@ -40,18 +40,18 @@ if ~strcmp (frameType, 'ESH')
         Swprev2(i) = frameTprev2(i)*hannWindow ;
     end
     
-    Y1 = fft(Sw, 1024) ;
-    Y2 = fft(Swprev1, 1024) ;
-    Y3 = fft(Swprev2, 1024) ;
+    Y1 = fft(Sw) ;
+    Y2 = fft(Swprev1) ;
+    Y3 = fft(Swprev2) ;
     
-    r = abs(Y1);
-    f = angle(Y1);
+    r = abs(Y1(1:end/2));
+    f = angle(Y1(1:end/2));
     
-    rprev1 = abs(Y2);
-    fprev1 = angle(Y2);
+    rprev1 = abs(Y2(1:end/2));
+    fprev1 = angle(Y2(1:end/2));
     
-    rprev2 = abs(Y3);
-    fprev2 = angle(Y3);
+    rprev2 = abs(Y3(1:end/2));
+    fprev2 = angle(Y3(1:end/2));
     
     %Query 3
     rpred = 2*rprev1 - rprev2;
@@ -131,8 +131,8 @@ else
     Subprev1 = zeros(256,8) ;
     Sw = zeros(256,8) ;
     Swprev1 = zeros(256,8) ;
-    Y = zeros(128,8);
-    Yprev1 = zeros(128,8);
+    Y = zeros(256,8);
+    Yprev1 = zeros(256,8);
     r = zeros(128,8);
     f = zeros(128,8);
     rprev1 = zeros(128,8);
@@ -148,14 +148,14 @@ else
             Swprev1(n,i) = Subprev1(n,i)*hannWindow ;
         end
         
-        Y(:,i) = fft(Sw(:,i), 128);
-        Yprev1(:,i) = fft(Swprev1(:,i), 128);
+        Y(:,i) = fft(Sw(:,i));
+        Yprev1(:,i) = fft(Swprev1(:,i));
         
-        r(:,i) = abs( Y(:,i) );
-        f(:,i) = angle( Y(:,i) );
+        r(:,i) = abs( Y(1:end/2,i) );
+        f(:,i) = angle( Y(1:end/2,i) );
         
-        rprev1(:,i) = abs( Yprev1(:,i) );
-        fprev1(:,i) = angle( Yprev1(:,i) );
+        rprev1(:,i) = abs( Yprev1(1:end/2,i) );
+        fprev1(:,i) = angle( Yprev1(1:end/2,i) );
     end
 
     %Query 3
