@@ -5,8 +5,12 @@ frameNumber = size(AACSeq3 , 2);
 channel_1 = [];
 channel_2 = [];
 
-frameF_L = iAACquantizer(AACSeq3(1).chl.S, [AACSeq3(1).chl.G ; AACSeq3(1).chl.sfc], AACSeq3(1).chl.G, AACSeq3(1).frameType);
-frameF_R = iAACquantizer(AACSeq3(1).chr.S, [AACSeq3(1).chr.G ; AACSeq3(1).chr.sfc], AACSeq3(1).chr.G, AACSeq3(1).frameType);
+sfcL = decodeHuff(AACSeq3(1).chl.sfc, 12, loadLUT());
+sfcR = decodeHuff(AACSeq3(1).chr.sfc, 12, loadLUT());
+S_L = decodeHuff(AACSeq3(1).chl.stream, AACSeq3(1).chl.codebook, loadLUT());
+S_R = decodeHuff(AACSeq3(1).chr.stream, AACSeq3(1).chr.codebook, loadLUT());
+frameF_L = iAACquantizer(S_L, [AACSeq3(1).chl.G ; sfcL'], AACSeq3(1).chl.G, AACSeq3(1).frameType);
+frameF_R = iAACquantizer(S_R, [AACSeq3(1).chr.G ; sfcR'], AACSeq3(1).chr.G, AACSeq3(1).frameType);
 
 frameF = [iTNS(frameF_L, AACSeq3(1).frameType, AACSeq3(1).chl.TNScoeffs) iTNS(frameF_R, AACSeq3(1).frameType, AACSeq3(1).chr.TNScoeffs)] ;
 
@@ -15,16 +19,32 @@ prevFrameT = frameT;
 
 
 for i=2:frameNumber
-    
+    i
     if strcmp(AACSeq3(i).frameType ,'ESH')
-        frameF_L = iAACquantizer(AACSeq3(i).chl.S, [AACSeq3(i).chl.G ; AACSeq3(i).chl.sfc], AACSeq3(i).chl.G, AACSeq3(i).frameType);
-        frameF_R = iAACquantizer(AACSeq3(i).chr.S, [AACSeq3(i).chr.G ; AACSeq3(i).chr.sfc], AACSeq3(i).chr.G, AACSeq3(i).frameType);
+        sfcL = decodeHuff(AACSeq3(i).chl.sfc, 12, loadLUT());
+        sfcR = decodeHuff(AACSeq3(i).chr.sfc, 12, loadLUT());
+        S_L = decodeHuff(AACSeq3(i).chl.stream, AACSeq3(i).chl.codebook, loadLUT());
+        S_R = decodeHuff(AACSeq3(i).chr.stream, AACSeq3(i).chr.codebook, loadLUT());
+        
+        sfcL = reshape(sfcL,41,8);
+        sfcR = reshape(sfcR,41,8);
+        S_L = reshape(S_L,128,8);
+        S_R = reshape(S_R,128,8);
+        
+        
+        frameF_L = iAACquantizer(S_L, [AACSeq3(i).chl.G ; sfcL], AACSeq3(i).chl.G, AACSeq3(i).frameType);
+        frameF_R = iAACquantizer(S_R, [AACSeq3(i).chr.G ; sfcR], AACSeq3(i).chr.G, AACSeq3(i).frameType);
         frameF = cat(3, iTNS(frameF_L, AACSeq3(i).frameType, AACSeq3(i).chl.TNScoeffs) , iTNS(frameF_R, AACSeq3(i).frameType, AACSeq3(i).chr.TNScoeffs)) ;
         
         frameF = permute(frameF, [1 3 2]);
     else
-        frameF_L = iAACquantizer(AACSeq3(i).chl.S, [AACSeq3(i).chl.G ; AACSeq3(i).chl.sfc], AACSeq3(i).chl.G, AACSeq3(i).frameType);
-        frameF_R = iAACquantizer(AACSeq3(i).chr.S, [AACSeq3(i).chr.G ; AACSeq3(i).chr.sfc], AACSeq3(i).chr.G, AACSeq3(i).frameType);
+        sfcL = decodeHuff(AACSeq3(i).chl.sfc, 12, loadLUT());
+        sfcR = decodeHuff(AACSeq3(i).chr.sfc, 12, loadLUT());
+        S_L = decodeHuff(AACSeq3(i).chl.stream, AACSeq3(i).chl.codebook, loadLUT());
+        S_R = decodeHuff(AACSeq3(i).chr.stream, AACSeq3(i).chr.codebook, loadLUT());
+        
+        frameF_L = iAACquantizer(S_L, [AACSeq3(i).chl.G ; sfcL'], AACSeq3(i).chl.G, AACSeq3(i).frameType);
+        frameF_R = iAACquantizer(S_R, [AACSeq3(i).chr.G ; sfcR'], AACSeq3(i).chr.G, AACSeq3(i).frameType);
         frameF = [iTNS(frameF_L, AACSeq3(i).frameType, AACSeq3(i).chl.TNScoeffs) iTNS(frameF_R, AACSeq3(i).frameType, AACSeq3(i).chr.TNScoeffs)] ;
     end
     

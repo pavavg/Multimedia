@@ -61,27 +61,36 @@ for i=1:frameNumber
     AACSeq3(i).chr.S = Sr;
     AACSeq3(i).chl.sfc = sfcL;
     AACSeq3(i).chr.sfc = sfcR;
+    
     if ~strcmp(AACSeq3(i).frameType, 'ESH')
         [AACSeq3(i).chl.stream, AACSeq3(i).chl.codebook] = encodeHuff(Sl, loadLUT() );
         [AACSeq3(i).chr.stream, AACSeq3(i).chr.codebook] = encodeHuff(Sr, loadLUT() );
-        %[AACSeq3(i).chl.sfc, ~] = encodeHuff(sfcL(2:end), loadLUT(), forceCodebook);
-        %[AACSeq3(i).chr.sfc,~] = encodeHuff(sfcR(2:end), loadLUT() , forceCodebook);
+        [AACSeq3(i).chl.sfc, ~] = encodeHuff(sfcL(2:end), loadLUT(), forceCodebook);
+        [AACSeq3(i).chr.sfc,~] = encodeHuff(sfcR(2:end), loadLUT() , forceCodebook);
         
     else
         streamL = [];
         streamR = [];
+        sfc_codedL = [];
+        sfc_codedR = [];
         for f =1:8
-            
             [tempStream, tempCodebookL] = encodeHuff(Sl(:,f), loadLUT() );
             streamL = strcat(streamL,tempStream) ;
+            tempSFC = encodeHuff(sfcL(2:end,f), loadLUT(), forceCodebook);
+            sfc_codedL = strcat(sfc_codedL, tempSFC);
             
             [tempStream, tempCodebookR] = encodeHuff(Sr(:,f), loadLUT() );
             streamR = strcat(streamR ,tempStream) ;
+            tempSFC = encodeHuff(sfcR(2:end,f), loadLUT(), forceCodebook);
+            sfc_codedR = strcat(sfc_codedR, tempSFC);
         end
         AACSeq3(i).chl.stream = streamL;
         AACSeq3(i).chr.stream = streamR;
         AACSeq3(i).chl.codebook = tempCodebookL;
         AACSeq3(i).chr.codebook = tempCodebookR;
+        AACSeq3(i).chl.sfc = sfc_codedL;
+        AACSeq3(i).chr.sfc = sfc_codedR;
+        
     end
     frameTprev2 = frameTprev1;
     frameTprev1 = frameT;
@@ -129,8 +138,8 @@ else
 
 end
 
-[Sl, sfcL, AACSeq3(frameNumber+1).chl.G] = AACquantizer(frameF(:,1,:), AACSeq3(frameNumber+1).frameType, SMRl);
-[Sr, sfcR, AACSeq3(frameNumber+1).chr.G] = AACquantizer(frameF(:,2,:), AACSeq3(frameNumber+1).frameType, SMRr);
+[Sl, sfcL, AACSeq3(frameNumber+1).chl.G] = AACquantizer(AACSeq3(frameNumber+1).chl.frameF, AACSeq3(frameNumber+1).frameType, SMRl);
+[Sr, sfcR, AACSeq3(frameNumber+1).chr.G] = AACquantizer(AACSeq3(frameNumber+1).chr.frameF, AACSeq3(frameNumber+1).frameType, SMRr);
 AACSeq3(frameNumber+1).chl.S = Sl;
 AACSeq3(frameNumber+1).chr.S = Sr;
 AACSeq3(frameNumber+1).chl.sfc = sfcL;
@@ -139,8 +148,8 @@ AACSeq3(frameNumber+1).chr.sfc = sfcR;
 if ~strcmp(AACSeq3(frameNumber+1).frameType, 'ESH')
     [AACSeq3(frameNumber+1).chl.stream, AACSeq3(frameNumber+1).chl.codebook] = encodeHuff(Sl, loadLUT() );
     [AACSeq3(frameNumber+1).chr.stream, AACSeq3(frameNumber+1).chr.codebook] = encodeHuff(Sr, loadLUT() );
-    %[AACSeq3(i).chl.sfc, ~] = encodeHuff(sfcL(2:end), loadLUT(), forceCodebook);
-    %[AACSeq3(i).chr.sfc,~] = encodeHuff((round(sfcR)), loadLUT() , forceCodebook);
+    [AACSeq3(frameNumber+1).chl.sfc, ~] = encodeHuff(sfcL(2:end), loadLUT(), forceCodebook);
+    [AACSeq3(frameNumber+1).chr.sfc, ~] = encodeHuff(sfcR(2:end), loadLUT() , forceCodebook);
 
 else
     streamL = [];
