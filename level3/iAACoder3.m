@@ -19,7 +19,7 @@ prevFrameT = frameT;
 
 
 for i=2:frameNumber
-    i
+    
     if strcmp(AACSeq3(i).frameType ,'ESH')
         sfcL = decodeHuff(AACSeq3(i).chl.sfc, 12, loadLUT());
         sfcR = decodeHuff(AACSeq3(i).chr.sfc, 12, loadLUT());
